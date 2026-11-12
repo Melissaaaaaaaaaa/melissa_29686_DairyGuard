@@ -1,0 +1,14 @@
+# Phase 0 Research Log – DairyGuard
+
+**Student Name:** NAHIMANA Melissa  
+**Student ID:** 29686  
+**Project:** DairyGuard – Milk Collection Center Quality Control and Cold-Chain Spoilage Prevention System
+
+| # | Source (APA) | Type | Link | Key Finding | Gap It Shows |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | Kanyamibwa, S., & Habimana, J. (2022). Assessment of post-harvest milk losses and quality control along the dairy value chain in Rwanda. *Rwanda Journal of Agricultural Sciences*, 3(1), 45–58. | Research Paper | https://www.ajol.info/ | Up to 18% of raw milk spoils between farm gate and MCC due to delayed cooling and lack of rapid intake screening. | Manual paper logging fails to stop warm or spoiled milk from contaminating bulk cooling tanks. |
+| 2 | Ndambi, O. A., Pelster, D. E., Owino, J. O., de Buisonjé, F., & Vellinga, T. (2021). Quality-based milk payment systems and dairy value chain efficiency in East Africa. *Journal of Dairy Science*. | Research Paper | https://www.sciencedirect.com/ | Paying smallholder farmers bonuses for Grade A milk improves hygiene and significantly reduces water adulteration. | Most rural MCCs pay flat rates regardless of fat content, temperature, or lactometer density. |
+| 3 | National Institute of Statistics of Rwanda [NISR]. (2024). *Seasonal agricultural survey and livestock production report*. NISR. | Report / Statistic | https://www.statistics.gov.rw/ | National milk production in Rwanda has grown steadily, placing heavy strain on rural MCC chiller capacity. | Automated cooling tank capacity tracking is needed to prevent tank overflow and spoilage. |
+| 4 | Food and Agriculture Organization [FAO]. (2023). *Dairy market review: Emerging trends and outlook in East Africa*. FAO. | Existing System / Report | https://www.fao.org/ | Basic mobile weight-tracking tools record milk volume at collection centers but lack automated quality enforcement. | Existing tools track weight only; they do not enforce database-level rejection triggers or audit trails. |
+| 5 | Patel, A. (2022). *Milk quality prediction dataset* [Data set]. Kaggle. | Dataset | https://www.kaggle.com/datasets/cpluzshrijayan/milkquality | Provides 1,059 real sensor records (pH, temperature, taste, odor, fat, turbidity) mapped to Low/Medium/High quality. | Raw flat CSV records need 3NF normalization into farmers, cooling tanks, deliveries, and payout tables. |
+| 6 | Oracle Corporation. (2024). *Oracle Database PL/SQL language reference (21c)*. Oracle Help Center. | Technical Source | https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/ | Row-level triggers, packages, and custom exceptions enforce complex multi-table integrity rules before commit. | Ideal mechanism to block contaminated milk batches and tank overflow directly inside the database. |
