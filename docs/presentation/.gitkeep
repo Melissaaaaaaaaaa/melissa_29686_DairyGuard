@@ -1,0 +1,135 @@
+# DairyGuard – Phase 0 Presentation Content (12 Slides)
+
+> Copy each slide block below into PowerPoint or Google Slides, add clean visual diagrams/icons, export as PDF/PPTX, and upload to `docs/presentation/` in your GitHub repository.
+
+---
+
+## Slide 1: Title Slide
+* **Title:** DairyGuard: Milk Collection Center Quality Control and Cold-Chain Spoilage Prevention System
+* **Subtitle:** INSY 8311 – Database Development with PL/SQL (Capstone Project – Phase 0)
+* **Presenter:** NAHIMANA Melissa (Student ID: 29686) – Group I
+* **Instructor:** Eric Maniraguha
+* **GitHub Repository:** https://github.com/Melissaaaaaaaaa/melissa_29686_DairyGuard
+
+---
+
+## Slide 2: Background and Problem
+* **Who is Affected:**
+  * Smallholder dairy farmers delivering daily milk to Milk Collection Centers (MCCs).
+  * MCC managers and dairy cooperatives managing bulk chillers and farmer payouts.
+  * Dairy processors and consumers relying on safe, uncontaminated milk.
+* **Why It Matters:**
+  * **15–20% post-harvest milk loss** occurs daily due to delayed cooling and lack of rapid quality enforcement.
+  * **Bulk Tank Cross-Contamination:** Pouring one warm ($>7^\circ\text{C}$) or water-adulterated batch into a bulk chiller spoils thousands of liters of good milk.
+  * **Manual Ledger Errors:** Paper-based recording causes delayed payouts and flat pricing that fails to reward hygienic milk production.
+
+---
+
+## Slide 3: Motivation
+* **Protecting Farmer Livelihoods:** Milk is a daily cash crop for rural Rwandan families; preventing batch spoilage directly protects cooperative and household income.
+* **Bridging the Enforcement Gap:** Recording numbers on paper or basic spreadsheets does not stop bad milk from entering a cooling tank—database-level rules do.
+* **Applying Oracle PL/SQL to Real-World Agri-Tech:** Leveraging triggers, packages, and live analytics to solve a critical cold-chain challenge in Rwanda's dairy sector.
+
+---
+
+## Slide 4: Objectives
+* **Main Objective:**
+  * Design and implement a normalized (3NF) Oracle PL/SQL database system that automates milk quality validation, cold-chain tank capacity tracking, and quality-graded farmer payouts.
+* **Specific Objectives:**
+  1. Normalize real-world milk quality records and cooperative structures into a 3NF relational schema.
+  2. Enforce automated temperature, pH, and density thresholds using PL/SQL triggers to block contaminated batches from bulk tanks.
+  3. Automate monthly farmer payouts with Grade A quality bonuses using PL/SQL packages and cursors.
+  4. Connect a live Power BI analytics dashboard to monitor spoilage rates and cooling tank utilization.
+
+---
+
+## Slide 5: Research – Existing Solutions and Gaps
+* **Existing Solutions:**
+  * *Manual Paper Logbooks:* Used in rural MCCs to write down morning/evening liter weights and lactometer notes.
+  * *Basic SMS / Spreadsheet Weight Trackers (e.g., RDCP pilots):* Digitize daily milk weights per farmer for basic bookkeeping.
+* **Identified Gaps:**
+  * **No Automated Rejection Logic:** Existing tools record data passively; they do not block warm or adulterated milk from tank assignment.
+  * **No Real-Time Tank Capacity Enforcement:** Risk of chiller overflow during peak morning delivery hours.
+  * **No Tamper-Proof Audit Trail:** Lab test edits and payout changes lack database-level security logging.
+
+---
+
+## Slide 6: Data Source
+* **Primary Dataset:** *Milk Quality Prediction Dataset* (Kaggle – `cpluzshrijayan/milkquality`)
+  * **Size:** 1,059 real laboratory observations.
+  * **Licence & Privacy:** Open educational use; 100% anonymized sensor data (no PII).
+* **Contextual Data:** NISR Rwanda Livestock Statistics (for modeling realistic cooperative volumes and RWF payout rates).
+* **Sample Records:**
+
+| pH | Temp ($^\circ\text{C}$) | Taste | Odor | Fat | Turbidity | Color | Quality Grade |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 6.6 | 35 | 1 | 0 | 1 | 0 | 254 | High (Grade A) |
+| 6.6 | 36 | 0 | 1 | 0 | 1 | 253 | Medium (Grade B) |
+| 8.5 | 70 | 1 | 1 | 1 | 1 | 246 | Low (Rejected) |
+| 3.0 | 40 | 1 | 0 | 0 | 0 | 255 | Low (Rejected) |
+
+---
+
+## Slide 7: Proposed Solution and Innovation
+* **End-to-End Workflow:**
+  1. Farmer delivers raw milk $\rightarrow$ Technician enters volume & rapid test readings (Temp, pH, Density, Fat).
+  2. **Oracle PL/SQL Engine** validates quality thresholds & checks tank capacity before commit.
+  3. Clean milk updates `COOLING_TANKS`; spoiled/adulterated milk is blocked and logged.
+  4. Monthly PL/SQL job calculates farmer payouts + Grade A bonuses.
+* **Planned Innovation (8 Marks):**
+  * **Option:** Live Analytics Dashboard (**Microsoft Power BI** connected to Oracle PDB via ODBC/ODAC).
+  * **Live Insights:** Daily accepted vs. rejected liters, cooling tank capacity gauges, spoilage trends by session/district, and top Grade A farmers.
+
+---
+
+## Slide 8: Planned Database (7 Tables in 3NF)
+* **`DISTRICTS_COOPERATIVES`** (`coop_id` PK) $\rightarrow$ 1:M with `FARMERS` and `COOLING_TANKS`.
+* **`FARMERS`** (`farmer_id` PK, `coop_id` FK) $\rightarrow$ 1:M with `MILK_DELIVERIES` and `FARMER_PAYOUTS`.
+* **`COOLING_TANKS`** (`tank_id` PK, `coop_id` FK) $\rightarrow$ 1:M with `MILK_DELIVERIES`.
+* **`MILK_DELIVERIES`** (`delivery_id` PK, `farmer_id` FK, `tank_id` FK) $\rightarrow$ 1:1 with `QUALITY_TESTS`.
+* **`QUALITY_TESTS`** (`test_id` PK, `delivery_id` FK) — stores Temp, pH, Density, Fat, Grade.
+* **`FARMER_PAYOUTS`** (`payout_id` PK, `farmer_id` FK) — monthly volume + quality bonus payouts.
+* **`AUDIT_LOG`** (`audit_id` PK) — tracks blocked deliveries and payout/test modifications.
+
+---
+
+## Slide 9: PL/SQL Approach (Specific Use Cases)
+* **Triggers:**
+  * `trg_validate_milk_quality`: Blocks a delivery from entering a bulk cooling tank if temperature $> 7^\circ\text{C}$ or pH is outside $6.5\text{–}6.8$.
+  * `trg_check_tank_capacity`: Prevents tank assignment if `current_volume + new_liters > max_capacity`.
+  * `trg_audit_payout_changes`: Captures any `UPDATE`/`DELETE` on `FARMER_PAYOUTS` into `AUDIT_LOG`.
+* **Functions & Procedures:**
+  * `fn_calculate_quality_grade`: Evaluates lab metrics to return `GRADE_A`, `GRADE_B`, or `REJECTED`.
+  * `proc_record_delivery`: Validates farmer status, grades milk, assigns an available tank, and updates tank volume atomically.
+* **Cursors, Packages & Exceptions:**
+  * `proc_generate_monthly_payouts` uses an explicit **cursor** to compute monthly earnings + Grade A bonuses.
+  * `pkg_dairy_operations` groups all subprograms and raises custom exceptions (`e_contaminated_milk`, `e_tank_full`).
+
+---
+
+## Slide 10: Expected Results (Phase VII Demo)
+* **Live Database Enforcement:** Demonstrate inserting a high-temperature/abnormal-pH milk batch and watching the PL/SQL trigger reject it before bulk tank contamination.
+* **Tank Capacity Protection:** Demonstrate blocking a delivery when a cooling tank reaches maximum liter capacity.
+* **Automated Payouts & Auditing:** Execute `proc_generate_monthly_payouts` and verify `AUDIT_LOG` entries after an attempted payout edit.
+* **Live Power BI Dashboard:** Show real-time charts refreshing directly from the Oracle PDB as new deliveries are recorded.
+
+---
+
+## Slide 11: Limitations and Future Improvements
+* **Current Limitations:**
+  * Rapid lab metrics (pH, temperature, lactometer density) are entered manually by the MCC technician at the collection desk.
+  * Initial deployment models cooperative-level tanks rather than individual farm refrigeration units.
+* **Future Improvements:**
+  * **IoT Sensor Integration:** Connect digital pH probes and chiller temperature sensors directly to Oracle via ORDS REST APIs for hands-free telemetry.
+  * **Automated SMS Alerts:** Integrate `UTL_MAIL` or an SMS gateway to notify farmers immediately when a batch is rejected or a monthly payout is approved.
+
+---
+
+## Slide 12: References (APA)
+* Food and Agriculture Organization [FAO]. (2023). *Dairy market review: Emerging trends and outlook in East Africa*. FAO. https://www.fao.org/
+* Kanyamibwa, S., & Habimana, J. (2022). Assessment of post-harvest milk losses and quality control along the dairy value chain in Rwanda. *Rwanda Journal of Agricultural Sciences*, 3(1), 45–58.
+* National Institute of Statistics of Rwanda [NISR]. (2024). *Seasonal agricultural survey and livestock production report*. NISR. https://www.statistics.gov.rw/
+* Ndambi, O. A., Pelster, D. E., Owino, J. O., de Buisonjé, F., & Vellinga, T. (2021). Quality-based milk payment systems and dairy value chain efficiency in East Africa. *Journal of Dairy Science*, 104(5), 6112–6125.
+* Oracle Corporation. (2024). *Oracle Database PL/SQL language reference (21c)*. Oracle Help Center. https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/
+* Patel, A. (2022). *Milk quality prediction dataset* [Data set]. Kaggle. https://www.kaggle.com/datasets/cpluzshrijayan/milkquality
+* SNV Netherlands Development Organisation. (2022). *Rwanda Dairy Competitiveness Program (RDCP): Digital Milk Collection Center Pilot*. SNV. https://www.snv.org/
