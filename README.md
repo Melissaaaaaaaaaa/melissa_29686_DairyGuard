@@ -60,7 +60,8 @@ Dairy farming is a vital pillar of Rwanda’s agricultural economy, yet Milk Col
 * `innovation/` — Power BI dashboard files, setup guide, and live screenshots (Phase VII)
 
 ## 8. References (APA)
-* Food and Agriculture Organization [FAO]. (2023). *Dairy market review: Emerging trends and outlook in East Africa*. FAO. https://www.fao.org/
+* Food and Agriculture Organization [FAO]. (2023). *Dairy market review: Emerging trends and outlook in East Africa*. FAO.
+* chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://openknowledge.fao.org/server/api/core/bitstreams/68f7f25d-b3cb-418e-b04d-5708e5bcea1e/content 
 * Kanyamibwa, S., & Habimana, J. (2022). Assessment of post-harvest milk losses and quality control along the dairy value chain in Rwanda. *Rwanda Journal of Agricultural Sciences*, 3(1), 45–58.
 * National Institute of Statistics of Rwanda [NISR]. (2024). *Seasonal agricultural survey and livestock production report*. NISR.https://statistics.gov.rw/statistical-publications/agriculture-environment/seasonal-agricultural-survey-2024-annual-report-2024
 * Patel, A. (2022). *Milk quality prediction dataset* [Data set]. Kaggle. https://www.kaggle.com/datasets/cpluzshrijayan/milkquality
